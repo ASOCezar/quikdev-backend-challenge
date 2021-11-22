@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from 'uuid';
 
 export type UserDocment = User & Document;
 
-type AdressType = {
+export type AddressType = {
   state: string;
   city: string;
   cep: string;
@@ -24,10 +24,13 @@ export class User {
   username: string;
 
   @Prop({ required: true })
+  password: string;
+
+  @Prop({ required: true })
   birthdate: string;
 
   @Prop({ required: true })
-  adress: AdressType;
+  adress: AddressType;
 
   @Prop({ required: true })
   primaryPhone: string;

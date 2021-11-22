@@ -10,6 +10,7 @@ export const userStub = (): User => {
       roadName: 'Praça Luiz Gonzaga',
       houseNumber: '1171',
     },
+    password: 'teste',
     birthdate: '1/20/1968',
     name: 'Giovana G Barros',
     username: 'GGB',
