@@ -2,7 +2,7 @@ import { Prop, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { v4 as uuidV4 } from 'uuid';
 
-export type UserDocment = User & Document;
+export type UserDocument = User & Document;
 
 export type AddressType = {
   state: string;
