@@ -9,6 +9,7 @@ export abstract class EntityRepository<T extends Document> {
   ): Promise<T | null> {
     return await this.entityModel
       .findOne(entityFilterQuery, {
+        _id: 0,
         __v: 0,
         ...projection,
       })
@@ -20,9 +21,7 @@ export abstract class EntityRepository<T extends Document> {
   }
 
   async create(createEntityData: AnyKeys<T> & AnyObject): Promise<T> {
-    const entity = new this.entityModel(createEntityData);
-
-    return await entity.save();
+    return this.entityModel.create(createEntityData);
   }
 
   async findOneAndUpdate(
@@ -39,7 +38,7 @@ export abstract class EntityRepository<T extends Document> {
   }
 
   async delete(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
-    const deleteResult = await this.entityModel.deleteOne(entityFilterQuery);
+    const deleteResult = await this.entityModel.deleteMany(entityFilterQuery);
 
     return deleteResult.deletedCount >= 1;
   }

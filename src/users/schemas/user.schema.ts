@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -14,8 +14,8 @@ export type AddressType = {
 
 @Schema()
 export class User {
-  @Prop({ type: String, default: uuidV4 })
-  _id: string;
+  @Prop({ type: String, default: uuidV4() })
+  userId: string;
 
   @Prop({ required: true })
   name: string;
@@ -29,7 +29,16 @@ export class User {
   @Prop({ required: true })
   birthdate: string;
 
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    type: {
+      state: String,
+      city: String,
+      cep: String,
+      roadName: String,
+      houseNumber: String,
+    },
+  })
   adress: AddressType;
 
   @Prop({ required: true })
@@ -38,6 +47,8 @@ export class User {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: Date, default: Date.now, immutable: true })
+  @Prop({ type: Date, default: Date.now })
   created_at: string;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

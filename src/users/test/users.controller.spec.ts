@@ -28,11 +28,11 @@ describe('UsersController', () => {
       let user: User;
 
       beforeEach(async () => {
-        user = await usersController.getUser(userStub()._id);
+        user = await usersController.getUser(userStub().userId);
       });
 
       it('should call usersService', () => {
-        expect(usersService.getUserById).toBeCalledWith(userStub()._id);
+        expect(usersService.getUserById).toBeCalledWith(userStub().userId);
       });
 
       it('should return a User', () => {
@@ -81,12 +81,15 @@ describe('UsersController', () => {
           username: 'Changed Username',
         };
 
-        user = await usersController.updateUser(userStub()._id, updateUserDTO);
+        user = await usersController.updateUser(
+          userStub().userId,
+          updateUserDTO,
+        );
       });
 
       it('should call usersService', () => {
         expect(usersService.updateUser).toBeCalledWith(
-          userStub()._id,
+          userStub().userId,
           updateUserDTO,
         );
       });
@@ -100,10 +103,10 @@ describe('UsersController', () => {
   describe('deleteUser', () => {
     describe('when deleteUser called', () => {
       beforeEach(async () => {
-        await usersController.deleteUser(userStub()._id);
+        await usersController.deleteUser(userStub().userId);
 
         it('should call usersService', () => {
-          expect(usersService.deleteUser).toBeCalledWith(userStub()._id);
+          expect(usersService.deleteUser).toBeCalledWith(userStub().userId);
         });
       });
     });
