@@ -25,6 +25,22 @@ export class UsersService {
     return user;
   }
 
+  async getUserByUsername(username: string): Promise<UserDocument> {
+    const user = await this.usersRepository.findOne({ username });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return user;
+  }
+
   async createUser(data: CreateUserDTO): Promise<UserDocument> {
     const newUser = new User();
 

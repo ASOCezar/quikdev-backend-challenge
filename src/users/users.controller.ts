@@ -3,22 +3,33 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDTO } from './dto/CreateUser.dto';
+import jwtDecode from 'src/utils/jwt-decode';
+import LoginDTO from './dto/Login.dto';
 import { UpdateUserDTO } from './dto/UpdateUser.dto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
-  @Get(':id')
-  async getUser(@Param('id') id: string): Promise<User> {
-    const user = await this.usersService.getUserById(id);
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getUser(@Request() request: Request): Promise<User> {
+    const { userId } = jwtDecode(request.headers['authorization']);
+
+    const user = await this.usersService.getUserById(userId);
 
     return user.toJSON({
       transform: (doc, ret) => {
@@ -44,12 +55,29 @@ export class UsersController {
     });
   }
 
-  @Put(':id')
+  @Post('login')
+  async login(@Body() data: LoginDTO) {
+    const { username, password } = data;
+
+    const user = await this.authService.validateUser(username, password);
+
+    const { access_token } = await this.authService.login(user);
+
+    return {
+      user,
+      access_token,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put()
   async updateUser(
-    @Param('id') id: string,
+    @Request() request: Request,
     @Body() data: UpdateUserDTO,
   ): Promise<User> {
-    const user = await this.usersService.updateUser(id, data);
+    const { userId } = jwtDecode(request.headers['authorization']);
+
+    const user = await this.usersService.updateUser(userId, data);
 
     return user.toJSON({
       transform: (doc, ret) => {
@@ -61,8 +89,11 @@ export class UsersController {
     });
   }
 
-  @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<void> {
-    return await this.usersService.deleteUser(id);
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteUser(@Request() request: Request): Promise<void> {
+    const { userId } = jwtDecode(request.headers['authorization']);
+
+    return await this.usersService.deleteUser(userId);
   }
 }

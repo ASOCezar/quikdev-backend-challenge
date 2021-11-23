@@ -1,6 +1,5 @@
 import { HttpException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { UserDocument } from '../schemas/user.schema';
 import { UsersRepository } from '../users.repository';
 import { UsersService } from '../users.service';
 import MockUserRepository from '../__mocks__/users.repository';
@@ -9,7 +8,6 @@ import { UserModel } from './support/user.model';
 
 describe('UsersService', () => {
   let usersService: UsersService;
-  let usersRepository: UsersRepository;
   const mockUserRepository = new MockUserRepository();
 
   beforeEach(async () => {
@@ -21,7 +19,6 @@ describe('UsersService', () => {
       .compile();
 
     usersService = moduleRef.get<UsersService>(UsersService);
-    usersRepository = moduleRef.get<UsersRepository>(UsersRepository);
   });
 
   it('should be defined', () => {
@@ -39,6 +36,20 @@ describe('UsersService', () => {
       expect(usersService.getUserById('its throw an error')).rejects.toThrow(
         HttpException,
       );
+    });
+  });
+
+  describe('getUserById', () => {
+    it('should return a user', async () => {
+      const user = await usersService.getUserByUsername(userStub.username);
+
+      expect(user).toEqual(userStub);
+    });
+
+    it('should return a error if user not found', async () => {
+      expect(
+        usersService.getUserByUsername('its throw an error'),
+      ).rejects.toThrow(HttpException);
     });
   });
 
