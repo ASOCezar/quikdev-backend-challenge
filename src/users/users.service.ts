@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserDTO): Promise<UserDocument> {
-    let newUser: User;
+    const newUser = new User();
 
     const userExists = await this.usersRepository.findOne({
       username: data.username,
@@ -77,7 +77,7 @@ export class UsersService {
         username: data.username,
       });
 
-      if (usernameExists.userId !== user.userId) {
+      if (usernameExists && usernameExists.userId !== user.userId) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
@@ -91,25 +91,7 @@ export class UsersService {
     }
 
     if (data.address) {
-      if (data.address.cep) {
-        user.address.cep = data.address.cep;
-      }
-
-      if (data.address.city) {
-        user.address.city = data.address.city;
-      }
-
-      if (data.address.houseNumber) {
-        user.address.houseNumber = data.address.houseNumber;
-      }
-
-      if (data.address.roadName) {
-        user.address.roadName = data.address.roadName;
-      }
-
-      if (data.address.state) {
-        user.address.state = data.address.state;
-      }
+      user.address = Object.assign(user.address, data.address);
     }
 
     if (data.username) {
@@ -153,13 +135,25 @@ export class UsersService {
         );
       }
 
-      user.password = data.newPassword;
+      user.password = await hash(data.newPassword, 8);
     }
 
     return await this.usersRepository.findOneAndUpdate({ userId }, user);
   }
 
   async deleteUser(userId: string): Promise<void> {
+    const user = await this.usersRepository.findOne({ userId });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.usersRepository.delete({ userId });
   }
 }

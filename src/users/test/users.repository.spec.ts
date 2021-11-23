@@ -5,7 +5,7 @@ import { MockModel } from 'src/database/test/support/mock.model';
 import { UpdateUserDTO } from '../dto/UpdateUser.dto';
 import { User, UserDocument } from '../schemas/user.schema';
 import { UsersRepository } from '../users.repository';
-import { userStub } from './stubs/user.stub';
+import userStub from './stubs/user.stub';
 import { UserModel } from './support/user.model';
 
 describe('UsersRepository', () => {
@@ -27,7 +27,7 @@ describe('UsersRepository', () => {
     usersRepository = moduleRef.get<UsersRepository>(UsersRepository);
     userModel = moduleRef.get<UserModel>(getModelToken(User.name));
     userFilterQuery = {
-      userId: userStub().userId,
+      userId: userStub.userId,
     };
 
     jest.clearAllMocks();
@@ -35,7 +35,7 @@ describe('UsersRepository', () => {
 
   describe('findOne', () => {
     describe('when findOne is called', () => {
-      let user: User;
+      let user: UserDocument;
 
       beforeEach(async () => {
         jest.spyOn(userModel, 'findOne');
@@ -50,19 +50,19 @@ describe('UsersRepository', () => {
       });
 
       it('should return a user', () => {
-        expect(user).toEqual(userStub());
+        expect(user).toStrictEqual(userStub);
       });
     });
   });
 
   describe('findOneAndUpdate', () => {
     describe('when findOneAndUpdate is called', () => {
-      let user: User;
+      let user: UserDocument;
       let updateUserData: UpdateUserDTO;
 
       beforeEach(async () => {
         updateUserData = {
-          name: userStub().name,
+          name: userStub.name,
         };
         jest.spyOn(userModel, 'findOneAndUpdate');
         user = await usersRepository.findOneAndUpdate(
@@ -82,19 +82,19 @@ describe('UsersRepository', () => {
       });
 
       it('should return a user', () => {
-        expect(user).toEqual(userStub());
+        expect(user).toStrictEqual(userStub);
       });
     });
   });
 
   describe('create', () => {
     describe('when create is called', () => {
-      let user: User;
+      let user: UserDocument;
       let saveSpy: jest.SpyInstance;
 
       beforeEach(async () => {
         saveSpy = jest.spyOn(MockModel.prototype, 'create');
-        user = await usersRepository.create(userStub());
+        user = await usersRepository.create(userStub);
       });
 
       it('should call the userModel', () => {
@@ -102,27 +102,22 @@ describe('UsersRepository', () => {
       });
 
       it('should return a user', () => {
-        expect(user).toEqual(userStub());
+        expect(user).toStrictEqual(userStub);
       });
     });
   });
 
   describe('delete', () => {
     let deleteSpy: jest.SpyInstance;
-    let result: boolean;
 
     describe('when delete is called', () => {
       beforeEach(async () => {
-        deleteSpy = jest.spyOn(MockModel.prototype, 'deleteMany');
-        result = await usersRepository.delete(userStub());
+        deleteSpy = jest.spyOn(MockModel.prototype, 'findOneAndDelete');
+        await usersRepository.delete(userFilterQuery);
       });
 
       it('should call the userModel', () => {
         expect(deleteSpy).toHaveBeenCalled();
-      });
-
-      it('should return true', () => {
-        expect(result).toBe(true);
       });
     });
   });

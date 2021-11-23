@@ -1,7 +1,3 @@
-type DeleteManyType = {
-  deletedCount: number;
-};
-
 export abstract class MockModel<T> {
   protected abstract entityStub: T;
 
@@ -19,9 +15,7 @@ export abstract class MockModel<T> {
     return this.entityStub;
   }
 
-  async deleteMany(): Promise<DeleteManyType> {
-    return {
-      deletedCount: 1,
-    };
+  async findOneAndDelete(): Promise<void> {
+    return;
   }
 }

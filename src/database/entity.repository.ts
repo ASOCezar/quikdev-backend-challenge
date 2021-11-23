@@ -16,10 +16,6 @@ export abstract class EntityRepository<T extends Document> {
       .exec();
   }
 
-  async find(entityFilterQuery: FilterQuery<T>): Promise<T[] | null> {
-    return await this.entityModel.find(entityFilterQuery);
-  }
-
   async create(createEntityData: AnyKeys<T> & AnyObject): Promise<T> {
     return this.entityModel.create(createEntityData);
   }
@@ -37,9 +33,7 @@ export abstract class EntityRepository<T extends Document> {
     );
   }
 
-  async delete(entityFilterQuery: FilterQuery<T>): Promise<boolean> {
-    const deleteResult = await this.entityModel.deleteMany(entityFilterQuery);
-
-    return deleteResult.deletedCount >= 1;
+  async delete(entityFilterQuery: FilterQuery<T>): Promise<void> {
+    await this.entityModel.findOneAndDelete(entityFilterQuery);
   }
 }
