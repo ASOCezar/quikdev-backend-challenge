@@ -39,7 +39,7 @@ export class User {
       houseNumber: String,
     },
   })
-  adress: AddressType;
+  address: AddressType;
 
   @Prop({ required: true })
   primaryPhone: string;

@@ -6,7 +6,7 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { userStub } from './stubs/user.stub';
 
-jest.mock('../../users.service.ts');
+jest.mock('../users.service.ts');
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -25,7 +25,7 @@ describe('UsersController', () => {
 
   describe('getUser', () => {
     describe('when getUser called', () => {
-      let user: User;
+      let user: Omit<User, 'password'>;
 
       beforeEach(async () => {
         user = await usersController.getUser(userStub().userId);
@@ -43,7 +43,7 @@ describe('UsersController', () => {
 
   describe('createUser', () => {
     describe('when createUser called', () => {
-      let user: User;
+      let user: Omit<User, 'password'>;
       let createUserDTO: CreateUserDTO;
 
       beforeEach(async () => {
@@ -51,7 +51,7 @@ describe('UsersController', () => {
           name: userStub().name,
           username: userStub().username,
           password: userStub().password,
-          address: userStub().adress,
+          address: userStub().address,
           birthdate: userStub().birthdate,
           description: userStub().description,
           primaryPhone: userStub().primaryPhone,
@@ -71,7 +71,7 @@ describe('UsersController', () => {
   });
 
   describe('updateUser', () => {
-    let user: User;
+    let user: Omit<User, 'password'>;
     let updateUserDTO: UpdateUserDTO;
 
     describe('when updateUser called', () => {
@@ -104,10 +104,10 @@ describe('UsersController', () => {
     describe('when deleteUser called', () => {
       beforeEach(async () => {
         await usersController.deleteUser(userStub().userId);
+      });
 
-        it('should call usersService', () => {
-          expect(usersService.deleteUser).toBeCalledWith(userStub().userId);
-        });
+      it('should call usersService', () => {
+        expect(usersService.deleteUser).toBeCalledWith(userStub().userId);
       });
     });
   });

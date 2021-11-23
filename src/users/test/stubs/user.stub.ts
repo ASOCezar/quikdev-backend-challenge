@@ -3,7 +3,7 @@ import { User } from 'src/users/schemas/user.schema';
 export const userStub = (): User => {
   return {
     userId: '107642fc-4ba6-11ec-81d3-0242ac130003',
-    adress: {
+    address: {
       cep: '05159-250',
       state: 'São Paulo',
       city: 'São Paulo',
