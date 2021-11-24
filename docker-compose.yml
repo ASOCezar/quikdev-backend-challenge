@@ -1,17 +1,28 @@
 version: "3"
 services:
+  app:
+    build: .
+    entrypoint: .docker/entrypoint.sh
+    container_name: quikdev-app
+    restart: always
+    ports:
+     - 3000:3000
+    volumes:
+      - .:/home/node/app
+    depends_on:
+      - mongo
   mongo:
-      image: mongo
-      restart: always
-      tty: true
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
-        MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS}
-        MONGO_INITDB_DATABASE: admin
-      ports:
-        - ${MONGODB_PORT}:27017
-      volumes:
-        - .docker/mongodb:/var/micro-data/mongodb/data/db
+    image: mongo
+    restart: always
+    tty: true
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS}
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - ${MONGODB_PORT}:27017
+    volumes:
+      - .docker/mongodb:/var/micro-data/mongodb/data/db
 
   mongo-express:
     image: mongo-express

@@ -1,73 +1,83 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Quikdev Challenge
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Bem vindo à minha versão do desafio Quikdev para desenvolvedores NodeJs Jr.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Ferramentas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+O sistema foi inteiramente desenvolvido utilizando NestJs. Um framework Node que utiliza da lib express em seu background para criação de aplicações Backend utilizando Typescript como linguagem de programação.
 
-## Installation
+
+Para a validação dos campos de criação de usuário utilizei [class-validator](https://github.com/typestack/class-validator) e [class-transformer](https://github.com/typestack/class-transformer) que o fazem automaticamente utilizando os DTOs fornecidos.
+
+
+Para elaboração dos testes, utilizei a biblioteca Jest.
+
+
+Os contêineres para a criação e rodagem da aplicação e a conexão com o banco de dados utiliza a tecnologia Docker e Docker-Compose. Nele estão o banco de dados MongoDB e o Mongo-Express para fazer a administração do banco além da própria aplicação Nest.
+
+
+Decidi pela utilização do Nest para o desenvolvimento dessa API dado o prazo para entrega e as facilidades que a biblioteca fornece no desenvolvimento direcionado ao fim esperado.
+
+# Como rodar a aplicação
+Primeiramente, para rodar essa aplicação é necessário que se faça uma cópia desse repositório em seu computador local. É possível fazer isso através do menu Code no início dessa página.
+
+Após ter feito o download de todas as pastas, é necessário que se rode o banco de dados que está instanciado no Docker através do arquivo docker-compose.yml, sendo assim, é necessário que se entre na pasta principal do projeto e digite:
 
 ```bash
-$ npm install
+docker-compose up --build
 ```
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+Após a confirmação da build serviços no Docker é possível acessar o Mongo-Express através do link http://localhost:8081 e o próprio banco MongoDB no link http://localhost:27017 a documentação dinâmica com a tecnologia Swagger pode ser acessada no navegador através do link http://localhost:3000/api/ .
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
+# End Points
+A API será disponibilizada no link http://localhost:3000 ou http://127.0.0.1:3000
 
-## Test
+## Usuário
+- GET(/user): busca todos os usuários cadastrados no banco de dados (rota deixada para fim de testes);
 
-```bash
-# unit tests
-$ npm run test
+- GET(/user/:id): passando um parâmetro com o id do usuário, busca e retorna os dados do usuário com o id fornecido;
 
-# e2e tests
-$ npm run test:e2e
+- POST(/user): cria um usuário no banco de dados ao receber no corpo da requisição os seguintes dados:
+	- name
+	- username
+	- password
+	- birthdate (no formato "xx/xx/xxxx")
+	- address
+		- state
+		- city
+		- cep
+		- roadName
+		- houseNumber
+	- primaryPhone (no formato (xx) xxxxx-xxxx)
+	- description
 
-# test coverage
-$ npm run test:cov
-```
+- POST(/user/login) faz o login do usuário devolvendo um token JWT para o acesso em rotas privadas da API. Deve-se fornecer os seguintes dados:
+	- username
+	- password
 
-## Support
+- PUT(/user) permite fazer a edição de alguns dos dados fornecidos pelo usuário ao banco de dados. **Essa é uma rota privada** é necessário fazer o login em uma conta para acessá-lo e só é possível fazer alterações no próprio perfil do usuário que está logado. Podem ser fornecidos:
+	- username (deve ser único da base de dados, retorna um erro caso tente cadastrar dois usuários com o mesmo username);
+	- name;
+	- birthdate (no formato "xx/xx/xxxx")
+	- address
+		- state
+		- city
+		- cep
+		- roadName
+		- houseNumber
+	- primaryPhone (no formato (xx) xxxxx-xxxx)
+	- description
+	- **Alterar a senha** para alteração de senha é necessário que forneça:
+		- oldPassword (senha atual cadastrada)
+		- newPassword (nova senha a ser cadastrada)
+		- confirmPassword (confirmação da nova senha a ser cadastrada)
+		
+- DELETE(/user) permite deletar uma conta cadastrada. **Essa é uma rota privada** é necessário fazer o login em uma conta para acessá-lo e só é possível deletar o próprio perfil do usuário que está logado.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Token
+- POST(/token) permite buscar um usuário cadastrado através do envio do token;
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- PUT(/token/refresh) faz a atualização de um token de usuário sem que esse tenha que refazer o login, para isso deve ser fornecido no corpo da requisição (em formato em JSON) o último token fornecido pela API (para evitar revalidações de tokens antigos e possivelmente diminuir a segurança).
