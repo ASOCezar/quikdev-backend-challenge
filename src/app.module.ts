@@ -10,7 +10,7 @@ import { UsersModule } from './users/users.module';
     MongooseModule.forRoot(
       `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`,
       {
-        dbName: 'quikdev_db',
+        dbName: process.env.MONGODB_DB,
       },
     ),
     UsersModule,
