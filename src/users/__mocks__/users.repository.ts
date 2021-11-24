@@ -8,6 +8,10 @@ type DataType = {
 };
 
 export default class MockUserRepository {
+  public find(): UserDocument[] {
+    return databaseReturn;
+  }
+
   public findOne({ userId, username }: DataType): UserDocument | null {
     const user = databaseReturn.filter((data: UserDocument) => {
       return userId

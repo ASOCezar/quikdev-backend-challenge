@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Request,
@@ -24,11 +25,25 @@ export class UsersController {
   ) {}
 
   @Get()
-  async getUser(@Request() request: LoginResponse): Promise<User> {
-    const {
-      user: { userId },
-    } = request;
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.usersService.find();
 
+    const mappedUsers = users.map((user) =>
+      user.toJSON({
+        transform: (doc, ret) => {
+          delete ret.password;
+          delete ret._id;
+          delete ret.__v;
+          return ret;
+        },
+      }),
+    );
+
+    return mappedUsers;
+  }
+
+  @Get('/:id')
+  async getUser(@Param('id') userId: string): Promise<User> {
     const user = await this.usersService.getUserById(userId);
 
     return user.toJSON({

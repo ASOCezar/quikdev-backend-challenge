@@ -31,13 +31,23 @@ describe('UsersController', () => {
     expect(usersController).toBeDefined();
   });
 
+  describe('getAllUsers', () => {
+    let retUsers: User[];
+    beforeEach(async () => {
+      retUsers = await usersController.getAllUsers();
+    });
+    it('should get an array of user', async () => {
+      expect(retUsers[0]).toEqual(userStub);
+    });
+    it('should call UsersService', () => {
+      expect(usersService.find).toBeCalled();
+    });
+  });
+
   describe('getUser', () => {
     let retUser: User;
     beforeEach(async () => {
-      retUser = await usersController.getUser({
-        user: userStub,
-        access_token: 'hash',
-      });
+      retUser = await usersController.getUser(userStub.userId);
     });
     it('should get an user', async () => {
       expect(retUser).toEqual(userStub);

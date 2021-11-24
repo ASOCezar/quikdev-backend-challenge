@@ -8,6 +8,7 @@ const mockUserStub = {
 };
 
 export const MockUsersService = {
+  find: jest.fn().mockReturnValue([mockUserStub]),
   getUserById: jest.fn().mockResolvedValue(mockUserStub),
   getUserByUsername: jest.fn().mockResolvedValue(mockUserStub),
   createUser: jest.fn().mockResolvedValue(mockUserStub),

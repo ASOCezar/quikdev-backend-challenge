@@ -9,6 +9,10 @@ import { compare, hash } from 'bcrypt';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  async find(): Promise<UserDocument[]> {
+    return this.usersRepository.find();
+  }
+
   async getUserById(id: string): Promise<UserDocument> {
     const user = await this.usersRepository.findOne({ userId: id });
 

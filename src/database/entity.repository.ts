@@ -16,6 +16,10 @@ export abstract class EntityRepository<T extends Document> {
       .exec();
   }
 
+  async find(): Promise<T[]> {
+    return await this.entityModel.find();
+  }
+
   async create(createEntityData: AnyKeys<T> & AnyObject): Promise<T> {
     return this.entityModel.create(createEntityData);
   }
