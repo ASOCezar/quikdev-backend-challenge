@@ -8,10 +8,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService, LoginResponse } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDTO } from './dto/CreateUser.dto';
-import jwtDecode from 'src/utils/jwt-decode';
 import LoginDTO from './dto/Login.dto';
 import { UpdateUserDTO } from './dto/UpdateUser.dto';
 import { User } from './schemas/user.schema';
@@ -24,10 +23,11 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
-  async getUser(@Request() request: Request): Promise<User> {
-    const { userId } = jwtDecode(request.headers['authorization']);
+  async getUser(@Request() request: LoginResponse): Promise<User> {
+    const {
+      user: { userId },
+    } = request;
 
     const user = await this.usersService.getUserById(userId);
 
@@ -70,12 +70,15 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Put('/:id')
   async updateUser(
-    @Request() request: Request,
-    @Body() data: UpdateUserDTO,
+    @Request() request: LoginResponse,
+    @Body()
+    data: UpdateUserDTO,
   ): Promise<User> {
-    const { userId } = jwtDecode(request.headers['authorization']);
+    const {
+      user: { userId },
+    } = request;
 
     const user = await this.usersService.updateUser(userId, data);
 
@@ -91,8 +94,10 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete()
-  async deleteUser(@Request() request: Request): Promise<void> {
-    const { userId } = jwtDecode(request.headers['authorization']);
+  async deleteUser(@Request() request: LoginResponse): Promise<void> {
+    const {
+      user: { userId },
+    } = request;
 
     return await this.usersService.deleteUser(userId);
   }

@@ -8,10 +8,7 @@ type DataType = {
 };
 
 export default class MockUserRepository {
-  public async findOne({
-    userId,
-    username,
-  }: DataType): Promise<UserDocument | null> {
+  public findOne({ userId, username }: DataType): UserDocument | null {
     const user = databaseReturn.filter((data: UserDocument) => {
       return userId
         ? data.userId === userId
@@ -40,7 +37,7 @@ export default class MockUserRepository {
     })[0];
   }
 
-  public async delete({ userId }: DataType) {
+  public delete({ userId }: DataType): void {
     databaseReturn.filter((data: UserDocument) => data.userId === userId);
 
     return;

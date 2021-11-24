@@ -20,18 +20,26 @@ export class TokenService {
     return validToken;
   }
 
-  async save(hash: string, username: string): Promise<TokenDocument> {
+  async save(
+    hash: string,
+    username: string,
+    userId: string,
+  ): Promise<TokenDocument> {
     const savedToken = await this.tokenRepository.findOne({ username });
 
     if (!savedToken) {
       await this.tokenRepository.create({
         hash,
         username,
+        userId,
       });
     } else {
-      await this.tokenRepository.findOneAndUpdate(savedToken.id, {
-        hash,
-      });
+      await this.tokenRepository.findOneAndUpdate(
+        { userId: savedToken.userId },
+        {
+          hash,
+        },
+      );
     }
 
     return savedToken;
